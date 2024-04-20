@@ -16,12 +16,9 @@
       when: "'CentOS' in ansible_distribution"
 
     - name: Set up Jenkins repository
-      ansible.builtin.ini:
-        path: /etc/yum.repos.d/jenkins.repo
-        section: jenkins
-        option: baseurl
-        value: "http://pkg.jenkins.io/redhat-stable"
-        state: present
+      ansible.builtin.template:
+        src: jenkins.repo.j2
+        dest: /etc/yum.repos.d/jenkins.repo
       when: "'CentOS' in ansible_distribution"
 
     - name: Import Jenkins GPG key
