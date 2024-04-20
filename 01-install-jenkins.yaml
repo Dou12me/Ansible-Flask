@@ -31,6 +31,22 @@
         state: present
       when: "'CentOS' in ansible_distribution"
 
+    - name: Pause for Jenkins service to start
+      ansible.builtin.pause:
+        seconds: 30
+      when: "'CentOS' in ansible_distribution"
+
+    - name: Display Jenkins Initial Admin Password
+      ansible.builtin.shell:
+        cmd: sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: jenkins_initial_password
+      when: "'CentOS' in ansible_distribution"
+
+    - name: Display Jenkins Initial Admin Password Info
+      ansible.builtin.debug:
+        var: jenkins_initial_password.stdout_lines
+      when: "'CentOS' in ansible_distribution"
+
     - name: Install Maven on CentOS
       ansible.builtin.yum:
         name: maven
