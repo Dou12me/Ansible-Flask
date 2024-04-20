@@ -17,7 +17,7 @@
 
     - name: Set up Jenkins repository
       ansible.builtin.template:
-        src: jenkins.repo.j2
+        src: templates/jenkins.repo.j2
         dest: /etc/yum.repos.d/jenkins.repo
       when: "'CentOS' in ansible_distribution"
 
