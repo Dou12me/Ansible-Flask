@@ -36,6 +36,13 @@
         seconds: 30
       when: "'CentOS' in ansible_distribution"
 
+    - name: Waiting for Jenkins service to start
+      ansible.builtin.wait_for:
+        port: 8080
+        delay: 10
+        timeout: 300
+      when: "'CentOS' in ansible_distribution"
+
     - name: Display Jenkins Initial Admin Password
       ansible.builtin.shell:
         cmd: cat /var/lib/jenkins/secrets/initialAdminPassword
