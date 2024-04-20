@@ -10,7 +10,7 @@ pipeline {
                 script {
                     // Clone and Build the Flask App
                     ansiblePlaybook(
-                        playbook: '/home/ubuntu/Ansible-Flask/03-deploy-flaskapp.yaml',
+                        playbook: '/home/centos/Ansible-Flask/03-deploy-flaskapp.yaml',
                         inventory: '/home/centos/Ansible-Flask/hosts.ini'
                     )
                 }
