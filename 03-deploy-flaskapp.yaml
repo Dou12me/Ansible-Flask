@@ -1,0 +1,22 @@
+---
+- name: Provision and configure Flask_App
+  hosts: g2
+  become: yes
+
+  tasks:
+    - name: Start Flask App on CentOS
+      command: "nohup python3 /home/centos/Ansible-Flask
+           /app.py"
+      async: 100
+      poll: 0
+      become_user: "{{ ansible_user }}"
+      when: ansible_distribution == "CentOS"
+
+    - name: Start Flask App on Ubuntu
+      command: "nohup python3 /home/ubuntu/Ansible-Flask
+               /app.py"
+      async: 100
+      poll: 0
+      become_user: "{{ ansible_user }}"
+      when: ansible_distribution == 'Ubuntu'
+...

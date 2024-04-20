@@ -1,0 +1,116 @@
+
+---
+- name: Install required packages and setup virtual environment
+  hosts: g2
+  become: yes
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Install required packages (Ubuntu)
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - git
+          - python3-venv
+          - ufw
+        state: present
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Install required packages (CentOS)
+      yum:
+        name:
+          - python3
+          - python3-pip
+          - git
+          - firewalld
+        state: present
+      when: ansible_distribution == "CentOS"
+
+    - name: Clone Flask-Web-App-Project from GitHub
+      git:
+        repo: https://github.com/Soniaok/Flask-Web-App-Project.git
+        dest: /home/{{ ansible_user }}/Flask-Web-App-project
+        version: main
+      environment:
+        GIT_SSH_COMMAND: 'ssh -o StrictHostKeyChecking=no'
+     
+    - name: Install virtualenv
+      pip:
+        name: virtualenv
+        executable: pip3
+        state: present
+
+    - name: Set up a virtual environment
+      become: yes
+      command: "python3 -m venv /home/{{ ansible_user }}/Flask-Web-App-project/flask_env"
+
+    - name: Activate Flask virtual environment
+      ansible.builtin.shell: source /home/{{ ansible_user }}/Flask-Web-App-project/flask_env/bin/activate
+      args:
+        executable: /bin/bash
+
+    - name: Install Flask
+      pip:
+        name: Flask
+        executable: pip3
+        state: present
+      when: ansible_distribution == 'CentOS'
+
+    - name: Install Flask 
+      pip:
+        name: Flask
+        executable: /usr/bin/pip
+        state: present
+        extra_args: "--ignore-installed"
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Install Gunicorn
+      pip:
+        name: gunicorn
+        executable: pip3
+        state: present
+      when: ansible_distribution == 'CentOS'
+
+    - name: Install Gunicorn 
+      pip:
+        name: gunicorn
+        executable: /usr/bin/pip
+        state: present
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Configure Firewall (Ubuntu)
+      ufw:
+        rule: allow
+        port: 5000
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Configure Firewall (Ubuntu)
+      ufw:
+        rule: allow
+        port: 22
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Configure Firewall (CentOS)
+      firewalld:
+        port: 5000/tcp
+        permanent: yes
+        state: enabled
+      when: ansible_distribution == 'CentOS'
+
+    - name: Restart firewalld for CentOS
+      systemd:
+        name: firewalld
+        state: restarted
+      become: yes
+      when: ansible_distribution == 'CentOS'
+
+    - name: Enable UFW for Ubuntu
+      command: ufw --force enable
+      become: yes
+      when: ansible_distribution == 'Ubuntu'
+...
