@@ -9,9 +9,15 @@
         state: present
       when: "'CentOS' in ansible_distribution"
 
+    - name: Ensure /etc/yum.repos.d directory exists
+      ansible.builtin.file:
+        path: /etc/yum.repos.d
+        state: directory
+
     - name: Download Jenkins repository file
-      ansible.builtin.command: 
-        cmd: "wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo"
+      ansible.builtin.get_url:
+        url: "https://pkg.jenkins.io/redhat-stable/jenkins.repo"
+        dest: "/etc/yum.repos.d/jenkins.repo"
       when: "'CentOS' in ansible_distribution"
 
     - name: Import Jenkins GPG key
