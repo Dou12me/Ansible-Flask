@@ -12,11 +12,11 @@
       become_user: "{{ ansible_user }}"
       when: ansible_distribution == "CentOS"
 
-    - name: Start Flask App on Ubuntu
-      command: "nohup python3 /home/ubuntu/Ansible-Flask
+    - name: Start Flask App on centos
+      command: "nohup python3 /home/centos/Ansible-Flask
                /app.py"
       async: 100
       poll: 0
       become_user: "{{ ansible_user }}"
-      when: ansible_distribution == 'Ubuntu'
+      when: ansible_distribution == 'centos'
 ...
