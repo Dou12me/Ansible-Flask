@@ -35,7 +35,7 @@
       ansible.builtin.wait_for:
         port: 8080
         delay: 10
-        timeout: 120
+        timeout: 300  # Increased timeout to 300 seconds (5 minutes)
       when: "'CentOS' in ansible_distribution"
 
     - name: Display Jenkins Initial Admin Password
