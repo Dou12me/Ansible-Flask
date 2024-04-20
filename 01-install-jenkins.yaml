@@ -31,6 +31,11 @@
         state: present
       when: "'CentOS' in ansible_distribution"
 
+    - name: Delay for Jenkins service to start (CentOS)
+      ansible.builtin.pause:
+        seconds: 30
+      when: "'CentOS' in ansible_distribution"
+
     - name: Display Jenkins Initial Admin Password
       ansible.builtin.shell:
         cmd: cat /var/lib/jenkins/secrets/initialAdminPassword
