@@ -32,13 +32,15 @@
       when: "'CentOS' in ansible_distribution"
 
     - name: Pause for Jenkins service to start
-      ansible.builtin.pause:
-        seconds: 30
+      ansible.builtin.wait_for:
+        port: 8080
+        delay: 10
+        timeout: 120
       when: "'CentOS' in ansible_distribution"
 
     - name: Display Jenkins Initial Admin Password
       ansible.builtin.shell:
-        cmd: sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+        cmd: cat /var/lib/jenkins/secrets/initialAdminPassword
       register: jenkins_initial_password
       when: "'CentOS' in ansible_distribution"
 
