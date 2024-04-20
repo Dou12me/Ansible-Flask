@@ -9,22 +9,14 @@
         state: present
       when: "'CentOS' in ansible_distribution"
 
-    - name: Download Jenkins GPG key
-      ansible.builtin.get_url:
-        url: "https://pkg.jenkins.io/redhat-stable/jenkins.io.key"
-        dest: "/etc/pki/rpm-gpg/RPM-GPG-KEY-jenkins"
-      when: "'CentOS' in ansible_distribution"
-
-    - name: Set up Jenkins repository
-      ansible.builtin.template:
-        src: templates/jenkins.repo.j2
-        dest: /etc/yum.repos.d/jenkins.repo
+    - name: Download Jenkins repository file
+      ansible.builtin.command: 
+        cmd: "wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo"
       when: "'CentOS' in ansible_distribution"
 
     - name: Import Jenkins GPG key
-      ansible.builtin.rpm_key:
-        state: present
-        key: RPM-GPG-KEY-jenkins
+      ansible.builtin.command: 
+        cmd: "rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key"
       when: "'CentOS' in ansible_distribution"
 
     - name: Install Jenkins on CentOS
